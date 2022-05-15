@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#SBATCH -N 6
+#SBATCH -t 01:00:00
+srun /scratch/hpc_2022/reynir/funcf > results/f.txt 2>&1
+
+srun /scratch/hpc_2022/reynir/funcg > results/g.txt 2>&1
+
+srun /scratch/hpc_2022/reynir/funch > results/h.txt 2>&1
