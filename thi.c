@@ -14,7 +14,7 @@
 #define I(x,y,z) ((y) ^ (x | ~z))
 #define CHUNK (SIZE/CORES)
 
-unsigned int output[0xffff] = {0};
+unsigned int output[0xfffff] = {0};
 
 
 
@@ -33,7 +33,7 @@ void* threadFunc(void *index)
             for (unsigned int k=0;k<SIZE;k++)
             {
                 unsigned int idx = I(min,j,k);
-                output[idx] += 1;
+                //output[idx] += 1;
             }
         }
     }
@@ -64,7 +64,7 @@ int main()
 
     for (int i=0; i<SIZE; i++) { printf("%d - %d\n", i, output[i]); } 
        
-    printf("Time for SIZE(%d), CORES(%d), CHUNK(%d) -> %ld\n", SIZE, CORES, CHUNK, t);
+    printf("Time for SIZE(%d), CORES(%d), CHUNK(%d) -> %ld \xC2\xB5s\n", SIZE, CORES, CHUNK, t);
 
     
     return 0;
