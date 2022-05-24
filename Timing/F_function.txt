@@ -1,0 +1,12 @@
+Time for SIZE(512), CORES(1), CHUNK(512) -> 24672 µs
+Time for SIZE(512), CORES(2), CHUNK(256) -> 29854 µs
+Time for SIZE(512), CORES(4), CHUNK(128) -> 39547 µs
+Time for SIZE(512), CORES(8), CHUNK(64) ->  66013 µs
+
+Time for SIZE(1024), CORES(1), CHUNK(1024) -> 169950 µs
+Time for SIZE(1024), CORES(2), CHUNK(512) ->  182315 µs
+Time for SIZE(1024), CORES(4), CHUNK(256) ->  202485 µs
+Time for SIZE(1024), CORES(8), CHUNK(128) ->  352119 µs
+
+Time for SIZE(2048), CORES(8), CHUNK(256) -> 2376254 µs
+Time for SIZE(4096), CORES(8), CHUNK(512) -> 17630674 µs

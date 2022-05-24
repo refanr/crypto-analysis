@@ -6,23 +6,40 @@
 #include <time.h>
 #include <pthread.h>
 
-#define SIZE 
-unsigned long* output=NULL;
+#define SIZE 4096
+#define CORES 8
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
-#define H(x,y,z) (x^y^z)
-#define I(x,y,z) (y^(x|~z))
+#define H(x,y,z) (x ^ y ^ z)
+#define I(x,y,z) ((y) ^ (x | ~z))
+#define CHUNK (SIZE/CORES)
 
+unsigned int iFunc(unsigned int x, unsigned int y, unsigned int z){ return (y^(x|(~z))); }
+
+
+unsigned int output[0xfffff] = {0};
 
 
 
 void* threadFunc(void *index)
 {
-    unsigned int i = (unsigned int)index; 
-    for (unsigned int j=0;j<SIZE;j++){
-        for (unsigned int k=0;k<SIZE;k++){
-            unsigned int idx = F(i,j,k);
-            output[idx] = output[idx] + 1;
+    unsigned int *i = (unsigned int *)(index);    
+    unsigned int min,max;
+    min = ((*i)-1) * CHUNK;
+    max = min + CHUNK;
+    
+    
+    for(;min < max;min++)
+    {
+             
+        for (unsigned int j=0;j<SIZE;j++)
+        {
+            
+            for (unsigned int k=0;k<SIZE;k++)
+            {
+                unsigned int idx = F(min,j,k);
+                output[idx] += 1;
+            }
         }
     }
     pthread_exit(NULL);
@@ -30,31 +47,32 @@ void* threadFunc(void *index)
 }
 
 int main() 
-{
-
-    unsigned int outSize = SIZE;
-    output = calloc(SIZE+1, sizeof *output);
-    
+{    
     time_t start,end;
     start = clock();
     
-    pthread_t t1;
-    for (unsigned int i=0;i<SIZE;i++)
+    pthread_t tid[CORES];
+
+    for (unsigned int i=0;i<CORES;i++)
     {
-        pthread_create (&t1, NULL, threadFunc, (void *)i);
+        pthread_create (&tid[i], NULL, threadFunc, (void *)(&i));
     }
-
-    pthread_join(t1,NULL);
-
-    end = clock();
-    long t = end - start;    
+        
     
+    for (int i=0; i<CORES;i++)
+        pthread_join(tid[i],NULL);
+    
+    end = clock();
+    long t = (end - start)/10;
+    int i = 0;
+     
+    // for I function:
+    //for (; i<SIZE; i++) { printf("%d - %d\n", (~i+((int)pow(2.0,32.0))), output[i]); }
+    // for F,G,H functions: 
+    //for (; i<SIZE; i++) { printf("%d - %d\n", i, output[i]); } 
+       
+    printf("Time for SIZE(%d), CORES(%d), CHUNK(%d) -> %ld \xC2\xB5s\n", SIZE, CORES, CHUNK, t);
 
-    for (int i=0;i<SIZE;i++){
-        printf("%lu\n",output[i]);
-    }
-
-    printf("%ld\n", t);
     
     return 0;
 }
