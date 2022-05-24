@@ -6,13 +6,16 @@
 #include <time.h>
 #include <pthread.h>
 
-#define SIZE 1024
-#define CORES 8
+#define SIZE 8
+#define CORES 1
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
 #define H(x,y,z) (x ^ y ^ z)
 #define I(x,y,z) ((y) ^ (x | ~z))
 #define CHUNK (SIZE/CORES)
+
+unsigned int iFunc(unsigned int x, unsigned int y, unsigned int z){ return (y^(x|(~z))); }
+
 
 unsigned int output[0xfffff] = {0};
 
@@ -21,8 +24,8 @@ unsigned int output[0xfffff] = {0};
 void* threadFunc(void *index)
 {
     printf("threadFunc\n");
-    int *i = (int *)(index);
-    int min,max;
+    unsigned int *i = (unsigned int *)(index);
+    unsigned int min,max;
     min = (*i) * CHUNK;
     max = min + CHUNK;
 
@@ -32,7 +35,8 @@ void* threadFunc(void *index)
         {
             for (unsigned int k=0;k<SIZE;k++)
             {
-                unsigned int idx = I(min,j,k);
+                unsigned int idx = iFunc(min,j,k);
+                printf("i: %d, j: %d, k: %d, idx: %d\n", *i,j,k, idx);
                 //output[idx] += 1;
             }
         }
@@ -62,7 +66,7 @@ int main()
     end = clock();
     long t = end - start; 
 
-    for (int i=0; i<SIZE; i++) { printf("%d - %d\n", i, output[i]); } 
+    //for (int i=0; i<SIZE; i++) { printf("%d - %d\n", i, output[i]); } 
        
     printf("Time for SIZE(%d), CORES(%d), CHUNK(%d) -> %ld \xC2\xB5s\n", SIZE, CORES, CHUNK, t);
 
