@@ -7,22 +7,34 @@
 #include <pthread.h>
 
 #define SIZE 1024
-unsigned long* output=NULL;
+#define CORES 8
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
-#define H(x,y,z) (x^y^z)
-#define I(x,y,z) (y^(x|~z))
+#define H(x,y,z) (x ^ y ^ z)
+#define I(x,y,z) ((y) ^ (x | ~z))
+#define CHUNK (SIZE/CORES)
 
+unsigned int output[0xffff] = {0};
 
 
 
 void* threadFunc(void *index)
 {
-    unsigned int i = (unsigned int)index; 
-    for (unsigned int j=0;j<SIZE;j++){
-        for (unsigned int k=0;k<SIZE;k++){
-            unsigned int idx = I(i,j,k);
-            output[idx] = output[idx] + 1;
+    printf("threadFunc\n");
+    int *i = (int *)(index);
+    int min,max;
+    min = (*i) * CHUNK;
+    max = min + CHUNK;
+
+    for(;min < max;min++)
+    {     
+        for (unsigned int j=0;j<SIZE;j++)
+        {
+            for (unsigned int k=0;k<SIZE;k++)
+            {
+                unsigned int idx = I(min,j,k);
+                output[idx] += 1;
+            }
         }
     }
     pthread_exit(NULL);
@@ -30,29 +42,30 @@ void* threadFunc(void *index)
 }
 
 int main() 
-{
-
-    unsigned int outSize = SIZE;
-    output = calloc(SIZE+1, sizeof *output);
-    
+{   
+    printf("beginning\n"); 
     time_t start,end;
     start = clock();
     
-    pthread_t t1;
-    for (unsigned int i=0;i<SIZE;i++)
-    {
-        pthread_create (&t1, NULL, threadFunc, (void *)i);
-    }
+    pthread_t tid[CORES];
 
-    pthread_join(t1,NULL);
+    for (int i=0;i<CORES;i++)
+    {
+        printf("threadloop\n");
+        pthread_create (&tid[i], NULL, threadFunc, (void *)(&i));
+    }
+        
+    
+    for (int i=0; i<CORES;i++)
+        pthread_join(tid[i],NULL);
 
     end = clock();
-    long t = end - start;    
-    printf("%ld\n", t);
+    long t = end - start; 
 
-    //printf("%d %d %d %d\n",I(1,2,3),I(2,3,1),I(3,1,2),I(2,1,3));
+    for (int i=0; i<SIZE; i++) { printf("%d - %d\n", i, output[i]); } 
+       
+    printf("Time for SIZE(%d), CORES(%d), CHUNK(%d) -> %ld\n", SIZE, CORES, CHUNK, t);
 
-    //free(output);
-    //output = NULL;
+    
     return 0;
 }
