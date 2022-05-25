@@ -6,8 +6,8 @@
 #include <time.h>
 #include <pthread.h>
 
-#define SIZE 2048
-#define CORES 32
+#define SIZE 8192
+#define CORES 8
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
 #define H(x,y,z) (x ^ y ^ z)
@@ -131,7 +131,7 @@ int main()
     for (int i=0; i<CORES;i++)
         pthread_join(tid[i],NULL);
     
-    FILE *out_file = fopen("output/Ffunction.txt", "w");
+    FILE *out_file = fopen("outputF.txt", "w");
 
     if (out_file == NULL)
     {
@@ -151,7 +151,7 @@ int main()
     for (int i=0; i<CORES;i++)
         pthread_join(tid[i],NULL);
 
-    FILE *out_fileG = fopen("output/Gfunction.txt", "w");
+    FILE *out_fileG = fopen("outputG.txt", "w");
 
     if (out_fileG == NULL)
     {
@@ -171,7 +171,7 @@ int main()
     for (int i=0; i<CORES;i++)
         pthread_join(tid[i],NULL);
 
-    FILE *out_fileH = fopen("output/Hfunction.txt", "w");
+    FILE *out_fileH = fopen("outputH.txt", "w");
 
     if (out_fileH == NULL)
     {
@@ -191,7 +191,7 @@ int main()
     for (int i=0; i<CORES;i++)
         pthread_join(tid[i],NULL);
     
-    FILE *out_fileI = fopen("output/Ifunction.txt", "w");
+    FILE *out_fileI = fopen("outputI.txt", "w");
 
     if (out_fileI == NULL)
     {
@@ -212,7 +212,7 @@ int main()
     //for (; i<SIZE; i++) { printf("%d - %d\n", i, output[i]); }
 
     
-    // FILE *out_file = fopen("output/Ffunction.txt", "w");
+    // FILE *out_file = fopen("Ffunction.txt", "w");
 
     // if (out_file == NULL)
     // {

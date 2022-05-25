@@ -6,7 +6,7 @@
 #include <time.h>
 #include <pthread.h>
 
-#define SIZE 2048
+#define SIZE 8192
 #define CORES 8
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
@@ -58,7 +58,7 @@ int main()
     for (int i=0; i<CORES;i++)
         pthread_join(tid[i],NULL);
      
-    FILE *out_file = fopen("output/Ffunction.txt", "w");
+    FILE *out_file = fopen("outputF.txt", "w");
 
     if (out_file == NULL)
     {

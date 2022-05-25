@@ -52,7 +52,7 @@ int main()
     for (int i=0; i<CORES;i++)
         pthread_join(tid[i],NULL);
     
-    FILE *out_file = fopen("output/Ifunction.txt", "w");
+    FILE *out_file = fopen("outputI.txt", "w");
 
     if (out_file == NULL)
     {
