@@ -11,10 +11,10 @@ Python 3.9.1
 C using the -std=c99 and -pthread flags for compiling with gcc
 
 \> gcc -std=c99 -pthread allFunctions.c -o allFunctions
-\> gcc -std=c99 -pthread thf.c -o funcf
-\> gcc -std=c99 -pthread thg.c -o funcg
-\> gcc -std=c99 -pthread thh.c -o funch
-\> gcc -std=c99 -pthread thi.c -o funci
+\> gcc -std=c99 -pthread functionF.c -o funcf
+\> gcc -std=c99 -pthread functionG.c -o funcg
+\> gcc -std=c99 -pthread functionH.c -o funch
+\> gcc -std=c99 -pthread functionI.c -o funci
 
 
 Make the sbatch_script executable and run, with: ./sbatch_script
