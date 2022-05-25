@@ -46,10 +46,7 @@ void* threadFunc(void *index)
 }
 
 int main() 
-{    
-    time_t start,end;
-    start = clock();
-    
+{        
     pthread_t tid[CORES];
 
     for (unsigned int i=0;i<CORES;i++)
@@ -60,17 +57,17 @@ int main()
     
     for (int i=0; i<CORES;i++)
         pthread_join(tid[i],NULL);
-    
-    end = clock();
-    long t = (end - start)/10;
-    int i = 0;
      
-    // for I function:
-    //for (; i<SIZE; i++) { printf("%d - %d\n", (~i+((int)pow(2.0,32.0))), output[i]); }
-    // for F,G,H functions: 
-    //for (; i<SIZE; i++) { printf("%d - %d\n", i, output[i]); } 
-       
-    printf("Time for SIZE(%d), CORES(%d), CHUNK(%d) -> %ld \xC2\xB5s\n", SIZE, CORES, CHUNK, t);
+    FILE *out_file = fopen("output/Gfunction.txt", "w");
+
+    if (out_file == NULL)
+    {
+        printf("Error\n");
+    } 
+    for (int i=0; i<SIZE; i++) 
+    {  
+        fprintf(out_file,"%d\n",output[i]);    
+    }
 
     
     return 0;

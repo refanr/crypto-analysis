@@ -6,23 +6,39 @@
 #include <time.h>
 #include <pthread.h>
 
-#define SIZE 65536
-unsigned long* output=NULL;
+#define SIZE 2048
+#define CORES 8
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
-#define H(x,y,z) (x^y^z)
-#define I(x,y,z) (y^(x|~z))
+#define H(x,y,z) (x ^ y ^ z)
+#define I(x,y,z) ((y) ^ (x | ~z))
+#define CHUNK (SIZE/CORES)
 
+
+
+unsigned int output[SIZE] = {0};
 
 
 
 void* threadFunc(void *index)
 {
-    unsigned int i = (unsigned int)index; 
-    for (unsigned int j=0;j<SIZE;j++){
-        for (unsigned int k=0;k<SIZE;k++){
-            unsigned int idx = H(i,j,k);
-            output[idx] = output[idx] + 1;
+    unsigned int *i = (unsigned int *)(index);    
+    unsigned int min,max;
+    min = ((*i)-1) * CHUNK;
+    max = min + CHUNK;
+    
+    
+    for(;min < max;min++)
+    {
+             
+        for (unsigned int j=0;j<SIZE;j++)
+        {
+            
+            for (unsigned int k=0;k<SIZE;k++)
+            {
+                unsigned int idx = H(min,j,k);
+                output[idx] += 1;
+            }
         }
     }
     pthread_exit(NULL);
@@ -30,32 +46,29 @@ void* threadFunc(void *index)
 }
 
 int main() 
-{
+{        
+    pthread_t tid[CORES];
 
-    unsigned int outSize = SIZE;
-    output = calloc(SIZE, sizeof *output);
-    
-    time_t start,end;
-    start = clock();
-    
-    pthread_t t1;
-    for (unsigned int i=0;i<SIZE;i++)
+    for (unsigned int i=0;i<CORES;i++)
     {
-        pthread_create (&t1, NULL, threadFunc, (void *)i);
+        pthread_create (&tid[i], NULL, threadFunc, (void *)(&i));
     }
+        
+    
+    for (int i=0; i<CORES;i++)
+        pthread_join(tid[i],NULL);
+     
+    FILE *out_file = fopen("output/Hfunction.txt", "w");
 
-    pthread_join(t1,NULL);
-
-    end = clock();
-    long t = end - start;    
-    printf("%ld\n", t);
+    if (out_file == NULL)
+    {
+        printf("Error\n");
+    } 
+    for (int i=0; i<SIZE; i++) 
+    {  
+        fprintf(out_file,"%d\n",output[i]);    
+    }
 
     
-    for (int i=0;i<SIZE;i++){
-        printf("%lu\n",output[i]);
-    }
-
-    free(output);
-    //output = NULL;
     return 0;
 }
