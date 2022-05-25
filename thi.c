@@ -6,8 +6,8 @@
 #include <time.h>
 #include <pthread.h>
 
-#define SIZE 16
-#define CORES 2
+#define SIZE 8192
+#define CORES 32
 #define F(x,y,z) ((x & y) | (~x & z))
 #define G(x,y,z) ((x & z) | (y & ~z))
 #define H(x,y,z) (x ^ y ^ z)

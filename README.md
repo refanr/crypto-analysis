@@ -16,7 +16,6 @@ C using the -std=c99 and -pthread flags for compiling with gcc
 \> gcc -std=c99 -pthread thh.c -o funch
 \> gcc -std=c99 -pthread thi.c -o funci
 
-make a folder /output for the output files
 
 Make the sbatch_script executable and run, with: ./sbatch_script
 
